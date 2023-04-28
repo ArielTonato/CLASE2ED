@@ -69,7 +69,7 @@ public class LinkedDoubleList {
         if (position > this.size) {
             return false;
         }
-        if (position == this.size) {
+        if (position >= this.size) {
             return insert(data);
         }
         Node currentNode = this.first;
@@ -80,6 +80,7 @@ public class LinkedDoubleList {
         }
         try {
             currentNode.next = new Node(currentNode, data, currentNode.next);
+            currentNode.next.next.prev = currentNode.next;
             this.size++;
             return true;
         } catch (Exception e) {
@@ -99,7 +100,7 @@ public class LinkedDoubleList {
             return true;
         }
 
-        if (position > this.size) {
+        if (position >= this.size) {
             return false;
         }
 
@@ -109,11 +110,50 @@ public class LinkedDoubleList {
             currentNode = currentNode.next;
             currentPosition++;
         }
+        currentNode.next.prev = null;
         currentNode.next = currentNode.next.next;
-
+        size--;
         return true;
-
     }
+
+    public boolean deleteData(Object data){
+        boolean deleted = false;
+        Node currentNode = this.first;
+        while (currentNode != null){
+            if (currentNode.data.equals(data)){
+                if (currentNode.prev != null) {
+                    currentNode.prev.next = currentNode.next;
+                } else {
+                    this.first = currentNode.next;
+                }
+                if (currentNode.next != null) {
+                    currentNode.next.prev = currentNode.prev;
+                }
+                deleted = true;
+            }
+            currentNode = currentNode.next;
+        }
+        return deleted;
+    }
+
+    public Object getData(int posicion){
+        if (posicion >= size){
+            return false;
+        }
+        if (posicion == 0){
+            return this.first.data;
+        }
+
+        Node currentNode = this.first;
+        int currentPosition = 0;
+        while (currentPosition < posicion-1){
+            currentNode = currentNode.next;
+            currentPosition++;
+        }
+        currentNode = currentNode.next;
+        return currentNode.data;
+    }
+
 
     public void printList() {
         Node currentNode = this.first;
